@@ -1,10 +1,11 @@
-var request = require('request');
-//var Response = require('./response.js')
+"use strict";
+let request = require('request');
+//let Response = require('./response.js')
 module.exports = {
 
 //TODO:Make it work
   /*Promises: function(type){
-    var newMessagePromise = new Promise(
+    let newMessagePromise = new Promise(
           // The resolver function is called with the ability to resolve or
           // reject the promise
           function(resolve, reject) {
@@ -36,12 +37,12 @@ module.exports = {
 */
   PushNotification: function(user_id){
    console.log("push_notifications");
-    var postData = {
+    let postData = {
       user: user_id,
       text: "Message from chat"
     };
 
-    var options = {
+    let options = {
       url: 'http://localhost:7000/api/chat/push_notifications/create/',
       headers: {
         'User-Agent': 'request',
@@ -72,7 +73,7 @@ module.exports = {
 
   showAvailableUsers: function (available, id){
     console.log("Id "  + id);
-    for(var i in available){
+    for(let i in available){
           console.log("user: " + available[i].id);
     }
   },
@@ -89,7 +90,7 @@ module.exports = {
 
 /*   showOnlineUsers: function (online){
     console.log("-- Users online --");
-    for(var item in online){
+    for(let item in online){
         console.log("  " + online[item].username + " id: " + online[item].id);
     }
     console.log("-- Users online end--");
@@ -97,10 +98,10 @@ module.exports = {
 
 
   sendPushNotificationToOffline: function(rooms, room_id){
-    var offline = this.getOfflineUsers(rooms, room_id);
+    let offline = this.getOfflineUsers(rooms, room_id);
 
     if(Object.keys(offline).length != 0){
-      for(var user in offline){
+      for(let user in offline){
         this.PushNotification(user);
       }
     }
@@ -108,10 +109,10 @@ module.exports = {
   },
   getOfflineUsers: function (rooms, room_id){
     console.log("Room id for search: " + room_id);
-    offline = {};
-    users = this.getUsersByRoom(rooms, room_id);
-    //var response = new Response("Success", "Existen usuarios offline");
-    for(var user in users){
+    let offline = {};
+    let users = this.getUsersByRoom(rooms, room_id);
+    //let response = new Response("Success", "Existen usuarios offline");
+    for(let user in users){
       console.log(users[user].online);
       if(!users[user].online){
          console.log("User not available "+ users[user].id);
@@ -198,13 +199,13 @@ module.exports = {
     console.log(" -- Clients in rooms --");
     console.log("Size: " + Object.keys(rooms).length);
     if(Object.keys(rooms).length != 0){
-      for(var item in rooms){
+      for(let item in rooms){
            console.log("room: " + item);
            console.log("people object: " + rooms[item].people);
            if(rooms[item].people != null && rooms[item].people != undefined){
               console.log("List people: " + Object.keys(rooms[item].people).length);
-           for(var person in rooms[item].people){
-              var personRoom = rooms[item].people[person];
+           for(let person in rooms[item].people){
+              let personRoom = rooms[item].people[person];
               console.log("person: " + personRoom.id + " " +personRoom.getUsername() + " " + personRoom.getOnline());
            }
          }else{
@@ -235,9 +236,9 @@ module.exports = {
 
   existRoom: function (array, user_id_1, user_id_2){
 
-    for(var i in array){
-      var initId = user_id_1 + user_id_2;
-      var initId_revert = user_id_2 + user_id_1 ;
+    for(let i in array){
+      let initId = user_id_1 + user_id_2;
+      let initId_revert = user_id_2 + user_id_1 ;
       console.log(initId + "==" + i.split("-")[0] + " || " + initId_revert + " == " + i.split("-")[0]);
       if(i.split("-").length > 1){
         if(initId == i.split("-")[0]  || initId_revert == i.split("-")[0] ){
