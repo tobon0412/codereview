@@ -173,7 +173,7 @@ io.on('connection', function (socket) {
   });
 
   // when the user disconnects.. perform this
-  socket.on('offline', function (data) {
+/*  socket.on('offline', function (data) {
     socket.broadcast.to(data.room).emit("update", {message: "offline", username: data.username, room: data.room});
     socket.leave(data.room);
     console.log("Join personal room: " + data.username + " data.room :" + data.room);
@@ -182,8 +182,21 @@ io.on('connection', function (socket) {
     console.log("Joined personal room: " + data.username + " data.room :" + socket.room);
     utils.setStatusUser(rooms, data.room, data.username, false);
     //utils.setOfflineUser(available, socket.id);
-  });
+  });*/
 
+  socket.on('disconnect', function () {
+    console.log("disconnect");
+    utils.setStatusUser(rooms, socket.room, socket.username, false);
+    //socket.broadcast.to(data.room).emit("update", {message: "offline", username: data.username, room: data.room});
+    socket.leave(socket.room);
+    console.log("socket.username: " + socket.username + " socket.room :" + socket.room + " " + socket.id);
+    //utils.setStatusUser(rooms, socket.room, socket.username, false);
+    socket.room = socket.username;
+    socket.join(socket.room);
+    console.log("socket.username: " + socket.username + " socket.room :" + socket.room);
+    utils.showClientsInRooms(rooms);
+    //utils.setOfflineUser(available, socket.id);
+  });
  /* socket.on("user rooms", function(id){
     console.log("All rooms of user: " + id);
     db.getDBRoomsByUser(id);
@@ -199,7 +212,7 @@ io.on('connection', function (socket) {
       let userRoom = new Room(data.id);
       let person = utils.getAvailableUser(available, data.id);
       if(person != undefined){
-        socket.username = person.getUsername();
+        socket.username = person.id;
         //person = db.getDBUserById(data.id);
         console.log("Person.id: " + person.id);
         //person.addSocket(socket);
@@ -281,15 +294,15 @@ io.on('connection', function (socket) {
       let person_2 = utils.getAvailableUser(available, data.user_id_2);
       room.addPerson(person_1);
       room.addPerson(person_2);
-
+      socket.username = person_1.id;
       let setDBRoomPromise = new Promise(
           // The resolver function is called with the ability to resolve or
           // reject the promise
           function(resolve, reject) {
-              console.log('Promise started setDBRoom async code started');
+              console.log('Promise started setDBRoom Transaction async code started');
               // This is only an example to create asynchronism
                db.setDBRoom(rooms, room, function(val){
-                  console.log('Promise fulfilled setDBRoom async code started');
+                  console.log('Promise fulfilled setDBRoom Transaction async code started');
                   if(val.code)
                     reject(val.code);
                   resolve(val);
@@ -299,7 +312,7 @@ io.on('connection', function (socket) {
       setDBRoomPromise.then(
           // Log the fulfillment value
           function(val) {
-              console.log('Promise fulfilled setDBRoom Async code terminated: ' + val);
+              console.log('Promise fulfilled setDBRoom Async Transactioncode terminated: ' + val);
                socket.room = room.id;
                socket.join(socket.room);
                console.log("send PushNotification to: " + person_2.id);
@@ -315,7 +328,7 @@ io.on('connection', function (socket) {
       .catch(
           // Log the rejection reason
           function(reason) {
-              console.log('Handle rejected promise  setDBRoom ' + reason);
+              console.log('Handle rejected promise  setDBRoom Transaction ' + reason);
           });
     }
     else{
@@ -340,9 +353,11 @@ io.on('connection', function (socket) {
       let person = utils.getAvailableUser(available, data.username);
       if(rooms[data.room] != undefined && rooms[data.room] != null
         && person != undefined && person != null){
+
         room = rooms[data.room];
         socket.room = room.id;
         socket.join(socket.room);
+        socket.username = person.id;
         //let newMessages = {};
         console.log("User " + data.username + " in room: " + socket.room);
         utils.showAvailableUsers(available, data.username);

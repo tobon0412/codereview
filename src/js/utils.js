@@ -35,7 +35,7 @@ module.exports = {
           });
   },
 */
-  PushNotification: function(user_id){
+  PushNotification: function(user_id, room_id){
    console.log("push_notifications");
     let postData = {
       user: user_id,
@@ -43,7 +43,7 @@ module.exports = {
     };
 
     let options = {
-      url: 'http://localhost:7000/api/chat/push_notifications/create/',
+      url: 'http://grandmatch.demasys.net/api/chat/push_notifications/create/',
       headers: {
         'User-Agent': 'request',
         'Content-Type': 'application/json'

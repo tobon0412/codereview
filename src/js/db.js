@@ -162,7 +162,7 @@ module.exports = {
       let query = "SELECT u.id, u.nickname, a.complete_image FROM account_user AS u "
             + "join account_avataruser AS a WHERE u.id=a.user_id;";
       let array = {};
-      console.log(query);
+      //console.log(query);
       pool.getConnection(function(err, connection){
         let rows = connection.query(query, function(err, rows, fields) {
         connection.release();
@@ -176,7 +176,7 @@ module.exports = {
                     person.setUsername(rows[i].nickname);
                     person.setImage(rows[i].complete_image);
                     array[rows[i].id] = person;
-                    console.log("Person: " + person.getUsername());
+                    //console.log("Person: " + person.getUsername());
                 };
             };
             callback(array);
@@ -233,6 +233,48 @@ module.exports = {
           });
       });
     },
+
+    /*setDBRoomT: function (rooms, room, callback){
+
+        pool.beginTransaction(function(err){
+        let query="INSERT INTO chat_room (uuid, name, is_active, creation_date, modify_date, position) VALUES ('"
+             + room.id + "'," + room.id.split('-')[0] + ", 1, " + pool.escape(new Date()) + ", " + pool.escape(new Date())
+             + ", 0) ON DUPLICATE KEY UPDATE modify_date=" + pool.escape(new Date()) +";" ;
+        console.log(query);
+          if(err) {callback(err);}
+          pool.query(query, function(err, rows, fields){ //Insertando nuestro comentario
+            if(err){
+               pool.rollback(function() {
+                  callback(err);
+                });
+            }
+            utils.setRoom(rooms, room);
+            let people = utils.getUsersFromRoom(rooms, room.id);
+            if(people != undefined && Object.keys(people).length != 0){
+              for(let person in people){
+                query = "INSERT INTO chat_roomuser(room_id, user_id, is_active, creation_date, modify_date, position) "
+                + " VALUES ('" + room.id+ "', '" + people[person].id+"', 1, " + pool.escape(new Date()) + ", " + pool.escape(new Date())
+                + ", 0) ON DUPLICATE KEY UPDATE modify_date=" + pool.escape(new Date()) +";" ;
+                console.log(query);
+                let rows = pool.query(query, function(err, rows){
+                    if(err){
+                     pool.rollback(function() {
+                        callback(err);
+                      });
+                    }
+                });
+              }
+            }
+            else {
+                console.log("No one in the room " + room );
+            }
+
+
+          });
+           pool.end();
+           callback("Success");
+      });
+    },*/
 
     getDBRoomsByUser: function (id){
       userRooms = {};
